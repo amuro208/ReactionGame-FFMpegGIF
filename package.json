@@ -1,7 +1,7 @@
 {
-  "name": "tcs-MediaPlayer",
+  "name": "reactionGame-ffmpegGIF",
   "version": "1.0.0",
-  "description": "TCS Media Player",
+  "description": "reactionGame-ffmpegGIF",
   "repository": "electron/simple-samples",
   "main": "app.js",
   "scripts": {

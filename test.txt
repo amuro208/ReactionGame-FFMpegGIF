@@ -1,0 +1,17 @@
+Thu 09/28/201710:14:34.12  call chrome to reboot router
+Thu 09/28/201710:17:39.60  call chrome to reboot router
+Thu 09/28/201710:28:28.76  call chrome to reboot router
+Thu 09/28/201710:29:10.95  call chrome to reboot router
+Thu 09/28/201710:30:31.35  call chrome to reboot router
+Thu 09/28/201710:31:50.63  call chrome to reboot router
+Thu 09/28/201710:32:26.67  call chrome to reboot router
+Thu 09/28/201710:33:21.54  call chrome to reboot router
+Thu 09/28/201710:33:48.65  call chrome to reboot router
+Thu 09/28/201710:37:12.70  call chrome to reboot router
+Thu 09/28/201710:54:17.82  call chrome to reboot router
+Thu 09/28/201710:55:15.50  call chrome to reboot router
+Thu 09/28/201710:55:46.19  call chrome to reboot router
+Thu 09/28/201710:56:54.01  call chrome to reboot router
+Thu 09/28/201711:10:44.27  call chrome to reboot router
+Thu 09/28/201711:15:58.29  call chrome to reboot router
+Thu 09/28/201711:40:14.88  call chrome to reboot router
