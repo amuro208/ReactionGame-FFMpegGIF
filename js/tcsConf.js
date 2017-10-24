@@ -4,8 +4,7 @@ var conf = {};
 	conf.CMD_SOCKET_ID = 1;
 	conf.CMD_SOCKET_IP = "192.168.0.2";
 	conf.CMD_SOCKET_PORT = 9000;
-	conf.CMS_LIST = "/ws/list.php";
-	conf.IS_MASTER = "N";
+	conf.ROOT_PATH = "N";
 	conf.initialReady = false;
 
 	conf.init = function(){
@@ -13,15 +12,14 @@ var conf = {};
 			if(localStorage.getItem("cmd_ip") != null)      this.CMD_SOCKET_IP   = localStorage.getItem("cmd_ip");
 			if(localStorage.getItem("cmd_port") != null)    this.CMD_SOCKET_PORT = localStorage.getItem("cmd_port");
 			if(localStorage.getItem("cmd_id") != null)      this.CMD_SOCKET_ID   = localStorage.getItem("cmd_id");
-			if(localStorage.getItem("cms_list") != null)    this.CMS_LIST        = localStorage.getItem("cms_list");
-			if(localStorage.getItem("ismaster") != null)    this.IS_MASTER        = localStorage.getItem("ismaster");
+			if(localStorage.getItem("root_path") != null)    this.ROOT_PATH        = localStorage.getItem("root_path");
+
 			this.initialReady = true;
 		}
 		this.setConfItem("cmd_ip",      this.CMD_SOCKET_IP);
 		this.setConfItem("cmd_port",    this.CMD_SOCKET_PORT);
 		this.setConfItem("cmd_id",      this.CMD_SOCKET_ID);
-		this.setConfItem("ismaster",this.IS_MASTER);
-		this.setConfItem("cms_list",    this.CMS_LIST);
+		this.setConfItem("root_path",this.ROOT_PATH);
 		log(this.CMD_SOCKET_IP+":"+this.CMD_SOCKET_PORT+"    ID:"+this.CMD_SOCKET_ID)
 	}
 
@@ -29,13 +27,13 @@ var conf = {};
 		localStorage.setItem("cms_evt_code", this.getConfItem("cms_evt_code"));
 		localStorage.setItem("cms_ip",       this.getConfItem("cms_ip"));
 		localStorage.setItem("cms_upload",   this.getConfItem("cms_upload"));
-		localStorage.setItem("cms_list",     this.getConfItem("cms_list"));
-		localStorage.setItem("ismaster",     this.getConfItem("ismaster"));
+
+		localStorage.setItem("root_path",     this.getConfItem("root_path"));
 		this.CMD_SOCKET_IP   = localStorage.getItem("cmd_ip");
 		this.CMD_SOCKET_PORT = localStorage.getItem("cmd_port");
 		this.CMD_SOCKET_ID   = localStorage.getItem("cmd_id");
-		this.CMS_LIST        = localStorage.getItem("cms_list");
-		this.IS_MASTER       = localStorage.getItem("ismaster");
+
+		this.ROOT_PATH       = localStorage.getItem("root_path");
 	}
 	conf.default = function (){
 
