@@ -145,10 +145,16 @@
       ff.on('close', (code) => {
         logFFmpeg("ff close : " + code);
 
-        if(currentProcess == "gif"){
+    if(currentProcess == "gif"){
 			setTimeout(function(){
 				logSocket("process "+user_pid+": done GIF image");
 				userEDMImage();
+			},50);
+
+		}if(currentProcess == "gif_p1"){
+			setTimeout(function(){
+				logSocket("process "+user_pid+": done GIF HD 1");
+				gifProcessHD1();
 
 			},50);
 
@@ -361,14 +367,71 @@
 		options.push("-y");
 		options.push("-i");
 		options.push(input);
+
 		//options.push("-filter:v");
 		//options.push("rotate="+cr+",crop="+cw+":"+ch+":"+cx+":"+cy+",scale="+outputWidth+":"+outputHeight);
+    options.push("-vf");
+		options.push("scale="+outputWidth+":"+outputHeight);
+
 		options.push("-q:v");
 		options.push("2");
 		options.push(output);
 		startProcess(options);
 
     }
+
+/*
+ffmpeg -i ./test/image-000.jpg -vf "fps=4,scale=620:-1:flags=lanczos,palettegen" -y palette.png
+ffmpeg -f image2 -framerate 4 -i ./test/image-%%03d.jpg -i palette.png  -lavfi "fps=4,scale=320:-1:flags=lanczos [x]; [x][1:v] paletteuse" -y output.gif
+ffmpeg -f image2 -framerate 4 -i ./test/image-%%03d.jpg -i palette.png  -lavfi "fps=4,scale=320:-1:flags=lanczos [x]; [x][1:v] paletteuse=dither=bayer:bayer_scale=1" -y output_dither_bayer_bayer_scale_1.gif
+ffmpeg -f image2 -framerate 4 -i ./test/image-%%03d.jpg -i palette.png  -lavfi "fps=4,scale=320:-1:flags=lanczos [x]; [x][1:v] paletteuse=dither=bayer:bayer_scale=2" -y output_dither_bayer_bayer_scale_2.gif
+ffmpeg -f image2 -framerate 4 -i ./test/image-%%03d.jpg -i palette.png  -lavfi "fps=4,scale=320:-1:flags=lanczos [x]; [x][1:v] paletteuse=dither=bayer:bayer_scale=3" -y output_dither_bayer_bayer_scale_3.gif
+ffmpeg -f image2 -framerate 4 -i ./test/image-%%03d.jpg -i palette.png  -lavfi "fps=4,scale=320:-1:flags=lanczos [x]; [x][1:v] paletteuse=dither=floyd_steinberg"     -y output_dither_floyd_steinberg.gif
+ffmpeg -f image2 -framerate 4 -i ./test/image-%%03d.jpg -i palette.png  -lavfi "fps=4,scale=320:-1:flags=lanczos [x]; [x][1:v] paletteuse=dither=sierra2"             -y output_dither_sierra2.gif
+ffmpeg -f image2 -framerate 4 -i ./test/image-%%03d.jpg -i palette.png  -lavfi "fps=4,scale=320:-1:flags=lanczos [x]; [x][1:v] paletteuse=dither=sierra2_4a"          -y output_dither_sierra2_4a.gif
+ffmpeg -f image2 -framerate 4 -i ./test/image-%%03d.jpg -i palette.png  -lavfi "fps=4,scale=320:-1:flags=lanczos [x]; [x][1:v] paletteuse=dither=none"                -y output_dither_none.gif
+
+*/
+
+   function gifProcessHD1(){
+     currentProcess = "gif_p1";
+ 		logSocket("process "+user_pid+": make palette image");
+ 		var input = conf.ROOT_PATH+"/Users/"+user_pid+"/image-%03d.jpg";
+ 		var output = conf.ROOT_PATH+"/Final/palette.png";
+ 		const options = [];
+ 		options.push("-y");
+ 		options.push("-v");
+ 		options.push("warning");
+ 		options.push("-i");
+ 		options.push(input);
+    options.push("-pix_fmt");
+    options.push("rgb24");
+ 		options.push("-vf");
+ 		options.push("fps=4,scale="+outputWidth+":-1:flags=lanczos,palettegen=stats_mode=diff");
+ 		options.push(output);
+ 		startProcess(options);
+   }
+   function gifProcessHD2(){
+     currentProcess = "gif";
+     logSocket("process "+user_pid+": make GIF image");
+     var input = conf.ROOT_PATH+"/Users/"+user_pid+"/image-%03d.jpg";
+     var input2 = conf.ROOT_PATH+"/Final/palette.png";
+     var output = conf.ROOT_PATH+"/Final/"+user_pid+".gif";
+     const options = [];
+     options.push("-y");
+     options.push("-v");
+  		options.push("warning");
+     options.push("-i");
+     options.push(input);
+     options.push("-i");
+     options.push(input2);
+     options.push("-pix_fmt");
+     options.push("rgb24");
+     options.push("-lavfi");
+     options.push("fps=4,scale="+outputWidth+":-1:flags=lanczos,paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle");
+     options.push(output);
+     startProcess(options);
+   }
 	 function gifProcess(){
 		currentProcess = "gif";
 		logSocket("process "+user_pid+": make GIF image");
