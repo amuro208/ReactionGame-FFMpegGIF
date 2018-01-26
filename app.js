@@ -9,7 +9,7 @@ app.on('ready', function () {
   // Create a new window
   window = new BrowserWindow({
     // Set the initial width to 500px
-    width: 600,
+    width: 1024,
     // Set the initial height to 400px
     height: 1080,
     // Show the minimize/maximize buttons inset in the window on macOS
