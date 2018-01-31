@@ -21,17 +21,24 @@ importScript('./js/common/StringUtil.js');
   console.log("parseXml : "+parseXml);
 
   function $$(id){ return document.getElementById(id); }
+  function getType(obj) {
+      // Object.toString returns something like "[object Type]"
+      var objectName = Object.prototype.toString.call(obj);
+      // Match the "Type" part in the first capture group
+      var match = /\[object (\w+)\]/.exec(objectName);
 
+      return match[1].toLowerCase();
+  }
   function clearlog(){
-    var txtarea = tcsapp.debug.debugTxtArea;
+    var txtarea = tcsapp.panelDebug.debugTxtArea;
     if(txtarea){
-      tcsapp.debug.debugTxtArea.innerHTML = "";
+      tcsapp.panelDebug.debugTxtArea.innerHTML = "";
     }
 
   }
   function log(msg){
     console.log(msg);
-    var txtarea = tcsapp.debug.debugTxtArea;
+    var txtarea = tcsapp.panelDebug.debugTxtArea;
     if(txtarea){
       txtarea.innerHTML+="\n"+msg;
       txtarea.scrollTop  =txtarea.scrollHeight;

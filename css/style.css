@@ -36,7 +36,22 @@ input{
 
 .form-group{margin-bottom:1.2rem;}
 .form-control{box-sizing: border-box; padding-left: .5rem 0; margin:0}
-
+.conf-table{display:table;width:100%;font-size: 0.8rem;}
+.conf-group{display:table-row;}
+.conf-title{display:table-cell;width:20%;text-align: right;}
+.conf-value{display:table-cell;text-align: left; padding:5px;}
+.conf-value input{
+    width:100%;
+    padding: .3rem .4rem;
+    font-size: 0.8rem;
+    line-height: 1.0;
+    color: #495057;
+    background-color: #fff;
+    background-image: none;
+    background-clip: padding-box;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: .25rem;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;}
 
 
 .btn-default {
@@ -85,53 +100,6 @@ body {
     height: auto;
 }
 
-.mastbody .btn-lg {
-  padding: 10px 20px;
-  font-weight: bold;
-}
-
-/* App Layout Basic */
-
-.site-wrapper       {width: 100%; height: 100%; display:table;}
-.site-wrapper-inner {vertical-align: middle; display:table-cell;padding-top:80px;}/*vertical middle*/
-.site-container     {}
-/* .site-container     {border:2px dashed #FF0000;} */
-/*
-border:1px dashed #CCC;
-*/
-.mastbody {margin:30px}
-/* .mastbody {border:1px dashed #FF0000;margin:30px} */
-.mastbody h4{margin-bottom: 40px;}
-
-.app-page{}
-.app-page-body{min-height: 300px; text-align: center; vertical-align:middle; margin:auto 0 ;}
-.app-buttons{padding-top:18px; min-height:110px;}
-
-.masthead {display:none;}
-.mastfoot {display:none;}
-
-.masthead h1{margin:33px 100px;}
-.mastfoot p{font-size: 0.8em;color:#999}
-
-/*landscape normal*/
-@media (min-height: 672px) {
-  .masthead { display:block; width:100%; height:120px;position:fixed; top:0;    background-image: url(../img/bg_top.png);   background-position: top center;    background-size:auto 100%;}
-  .mastfoot { display:block; width:100%; height:60px; position:fixed; bottom:0; background-image: url(../img/powered.png);  background-position: center;    background-size:150px auto; background-repeat:no-repeat;}
-}
-
-/*portrait*/
-@media (max-width: 767px) {
-  .masthead { display:block; width:100%; height:120px;position:absolute;background-image: url(../img/bg_top.png);   background-position: center;background-size:auto 100%;}
-  .mastfoot { display:block; width:100%; height:60px;position:relative;}
-}
-
-
-/* App Layout Dim */
-.dimm_left{width:150px;height:100%;background:linear-gradient(to right ,rgba(0, 0, 0, 0.6),
-                          rgba(0, 0, 0, 0.0)) ;opacity:0.8;position:absolute;z-index:1000;left:0px;top:0px}
-.dimm_right{width:150px;height:100%;background:linear-gradient(to left ,rgba(0, 0, 0, 0.6),
-                          rgba(0, 0, 0, 0.0)) ;opacity:0.8;position:absolute;z-index:1000;right:0px;top:0px}
-
 
 .scrollable{}
 
@@ -144,7 +112,6 @@ border:1px dashed #CCC;
             user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome and Opera */
 }
-
 
 /* Full popup Input, Configuration, Debug-Panel Thank you etc ..*/
 .full-popup{ position:absolute; z-index:10001; top:0px; left:0px; width:100%; height:100%; background-color:rgba(0, 0, 0, 0.7);  vertical-align: middle;  text-align: center;  display:none;}
@@ -159,9 +126,8 @@ border:1px dashed #CCC;
 .wrapper{display:table;width:100%;height:100%;border:1px dashed #FF0}
 .wrapper-block{display:table-row;padding-top:30px;width:100%;height:100px}
 
-
-#logSocketText div{position:absolute;right:20px;top:0;}
-#logSocketText img{padding:10px;width:300px;height:200px}
+#userPhotoPreview {position:absolute;right:20px;top:0;}
+#userPhotoPreview img{padding:10px;width:300px;height:200px}
 
 /* LOG Panel*/
 .debug-txt-area{width:100%; height:100%; min-height:450px; text-align: left; padding-left: 10px; overflow-y: scroll; -webkit-overflow-scrolling: touch; font-size: 0.6em;}

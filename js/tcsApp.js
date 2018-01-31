@@ -1,45 +1,56 @@
-	var tcsapp = function(){
+var tcsapp = {}
 
-	}
+tcsapp.pages = [];
+tcsapp.confKeys = [];
+tcsapp.previouspage = 0;
+tcsapp.currentpage = 0;
 
-	tcsapp.pages = [];
-	tcsapp.previouspage = 0;
-  tcsapp.currentpage = 0;
+tcsapp.isGameRunning = false;
+tcsapp.isGameReady = false;
 
-  tcsapp.isGameRunning = false;
-	tcsapp.isGameReady = false;
-
-  tcsapp.tcssocket = null;
-	tcsapp.conf = null;
-	tcsapp.debug = null;
-
+tcsapp.tcssocket = null;
+tcsapp.panelDebug = null;
+tcsapp.panelConf = null;
 
 
-	tcsapp.init = function(){
 
-			this.debug = new PanelDebug('panelDebug');
-	    this.debug.init();
+tcsapp.init = function(){
 
-			this.conf = new PanelConf('panelConf');
-			this.conf.init();
+		conf = {
+			CMD_SOCKET_ID:1,
+			CMD_SOCKET_IP:"127.0.0.1",
+			CMD_SOCKET_PORT:9000,
+			ROOT_PATH:"C:/AMURO/Workspace/TCSVideoPlayer/media"
+		};
 
-			this.tcssocket = new TCSWebSocket();
+		this.panelDebug = new PanelDebug('panelDebug');
+		this.panelConf = new PanelConf('panelConf');
+		this.tcssocket = new TCSWebSocket();
 
-			if(this.conf.initialReady){
+		document.addEventListener("onConfigLoaded",()=>{
+			this.panelDebug.init();
+			this.panelConf.setKeys(conf);
+			this.panelConf.init();
+
+			if(confCtrl.initialReady){
 				this.connectSocket();
 
 			}else{
-				this.conf.show();
+				this.panelConf.show();
 
 			}
-			this.paging(0);
-	}
+			FFMPEG.init();
+			window.addEventListener('keydown', FFMPEG.keyboardlistener);
+		})
+
+		confCtrl.load();
+}
 
 
-	tcsapp.connectSocket = function(){
-		this.tcssocket.setip(this.conf.CMD_SOCKET_ID,this.conf.CMD_SOCKET_IP,this.conf.CMD_SOCKET_PORT);
-		this.tcssocket.connect();
-	}
+tcsapp.connectSocket = function(){
+	this.tcssocket.setip(conf.CMD_SOCKET_ID,conf.CMD_SOCKET_IP,conf.CMD_SOCKET_PORT);
+	this.tcssocket.connect();
+}
 
 
 	tcsapp.paging = function(n){

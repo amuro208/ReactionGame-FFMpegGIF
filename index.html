@@ -17,6 +17,7 @@
       <script src="./js/common/common.js"        type="text/javascript"></script>
       <script src="./js/common/pageBase.js"        type="text/javascript"></script>
       <script src="./js/common/WebSocket.js"    type="text/javascript"></script>
+      <script src="./js/common/Configuration.js"       type="text/javascript"></script>
       <script src="./js/common/panelConf.js"       type="text/javascript"></script>
       <script src="./js/common/panelDebug.js"       type="text/javascript"></script>
 
@@ -30,11 +31,8 @@
       </style>
 
       <script type="text/javascript">
-
           function onload(){
             tcsapp.init();
-            FFMPEG.init();
-            window.addEventListener('keydown', FFMPEG.keyboardlistener);
           }
       </script>
   </head>
@@ -46,13 +44,13 @@
     <!-- DEBUGGING PANEL-->
     <div id = "panelDebug" class="full-popup"></div>
 
-    <div class="hidden-button lt" onclick="tcsapp.conf.show();" alt = "Open Configuration"></div>
-    <div class="hidden-button rt" onclick="tcsapp.debug.show();" alt = "Open Log Panel"></div>
+    <div class="hidden-button lt" onclick="tcsapp.panelConf.show();" alt = "Open Configuration"></div>
+    <div class="hidden-button rt" onclick="tcsapp.panelDebug.show();" alt = "Open Log Panel"></div>
 
 
     <div id = "pannelFFMPEG" class="wrapper">
       <div class="wrapper-block">
-        <textarea  class="debug-txt-area" style="min-height:200px; " id="logSocketText"></textarea ><div><img id="userPhotoPreview" src="" ></div>
+        <textarea  class="debug-txt-area" style="min-height:200px; " id="logSocketText"></textarea ><div id="userPhotoPreview"><img src="" ></div>
       </div>
       <div class="wrapper-block" style="height:100%">
         <textarea  class="debug-txt-area"  id="logFFmpegText"></textarea >

@@ -29,11 +29,18 @@ this.fs       = require("fs");
 
   this.logSocketText = $$("logSocketText");
   this.logFFmpegText = $$("logFFmpegText");
+  this.userPhotoPreview = $$("userPhotoPreview").getElementsByTagName("IMG")[0];
 
+  this.DIR_ROOT  = conf.ROOT_PATH;
 
-  this.logFFmpeg(tcsapp.conf.ROOT_PATH+'/Temp');
+  this.DIR_USER;
+  this.DIR_FINAL  = this.DIR_ROOT+'/Final';
+  this.DIR_TEMP   = this.DIR_ROOT+'/Temp';
+  this.DIR_PRESET = this.DIR_ROOT+'/Preset';
 
-  var watcher = this.chokidar.watch(tcsapp.conf.ROOT_PATH+'/Temp', {ignored: /(^|[\/\\])\../}).on('all', (event, file) => {
+  this.logFFmpeg(this.dirTemp);
+
+  var watcher = this.chokidar.watch(this.DIR_TEMP, {ignored: /(^|[\/\\])\../}).on('all', (event, file) => {
       this.logFFmpeg("event : "+event);
       if(!tcsapp.isGameRunning)return;
 
@@ -41,7 +48,7 @@ this.fs       = require("fs");
 
         if (this.path.extname(file).toUpperCase() == ".JPG"){
             //console.log(event, file);
-            var dest = tcsapp.conf.ROOT_PATH+"/Users/"+this.user_pid+"/image-"+sutil.zeroName3(this.namingIndex)+".jpg";
+            var dest = this.DIR_USER+"/image-"+sutil.zeroName3(this.namingIndex)+".jpg";
             //var dest = "T:/AMURO/image-"+zeroName(namingIndex)+".jpg";
             //console.log("user  : "+dest);
             //moveFile(file,dest,function(err){console.log(err)});
@@ -94,13 +101,13 @@ this.fs       = require("fs");
       if(e.detail.cmd!="ADDPOINT")this.logSocket("message : "+e.detail.cmd+":"+e.detail.msg);
 
       if(e.detail.cmd == "READY"){
-        //logFFmpeg(tcsapp.conf.ROOT_PATH+'/Temp');
+        //logFFmpeg(this.dirTemp);
 
         tcsapp.isGameReady = true;
         this.emptyLog();
         var arr = e.detail.msg.split("|")[0].split(",");
         this.cleanupTemp();
-        setTimeout(this.setNewGameProcess,100,this,arr[2]);
+        setTimeout(this.setNewGameProcess.bind(this),100,arr[2]);
 
       }else if(e.detail.cmd == "START"){
         tcsapp.isGameRunning = true;
@@ -113,9 +120,9 @@ this.fs       = require("fs");
       }else if(e.detail.cmd == "TIMEOUT"){
 		    tcsapp.isGameRunning = false;
         tcsapp.isGameReady = false;
-        setTimeout(function(_this){
-          _this.gifProcess();
-        },2000,this);
+        setTimeout(()=>{
+          this.gifProcess();
+        },2000);
 
       }else if(e.detail.cmd == "GAME_COMPLETE" || e.detail.cmd == "SUBMIT_ERROR"){
 
@@ -143,7 +150,7 @@ this.fs       = require("fs");
     }
 
   FFMPEG.startProcess = function(options){
-      this.ffmpeg = this.spawn(tcsapp.conf.ROOT_PATH+'/ffmpeg.exe',options);
+      this.ffmpeg = this.spawn(this.DIR_ROOT+'/ffmpeg.exe',options);
       this.ffmpeg.stdout.on('data', (data) => {
         this.logFFmpeg("ff stdout : " + data);
       });
@@ -156,32 +163,32 @@ this.fs       = require("fs");
         this.logFFmpeg("ff close : " + code);
 
     if(this.currentProcess == "gif"){
-			setTimeout(function(_this){
-				_this.logSocket("process "+_this.user_pid+": done GIF image");
-				_this.userEDMImage();
-			},50,this);
+			setTimeout(()=>{
+				this.logSocket("process "+this.user_pid+": done GIF image");
+				this.userEDMImage();
+			},50);
 
 		}if(this.currentProcess == "gif_p1"){
-			setTimeout(function(_this){
-				_this.logSocket("process "+_this.user_pid+": done GIF HD 1");
-				_this.gifProcessHD1();
-			},50,this);
+			setTimeout(()=>{
+				this.logSocket("process "+this.user_pid+": done GIF HD 1");
+				this.gifProcessHD1();
+			},50);
 
 		}else if(this.currentProcess == "edm"){
-			setTimeout(function(_this){
-				_this.logSocket("process "+_this.user_pid+": done EDM image");
-				_this.overlayProcess();
-			},50,this);
+			setTimeout(()=>{
+				this.logSocket("process "+this.user_pid+": done EDM image");
+				this.overlayProcess();
+			},50);
 
 		}else if(this.currentProcess == "overlay"){
-			setTimeout(function(_this){
-				_this.logSocket("process "+_this.user_pid+": done Overlay WaterMark");
+			setTimeout(()=>{
+				this.logSocket("process "+this.user_pid+": done Overlay WaterMark");
 				tcsapp.tcssocket.send("ALL","GIF_DONE","-");
-			},50,this);
+			},50);
 
 		}else if(this.currentProcess == "tweek"){
-			var dest = tcsapp.conf.ROOT_PATH+"/Users/"+this.user_pid+"/image-"+sutil.zeroName3(this.namingIndex-1)+".jpg";
-			$$("userPhotoPreview").src = dest;
+			var dest = this.DIR_USER+"/image-"+sutil.zeroName3(this.namingIndex-1)+".jpg";
+			this.userPhotoPreview.src = dest;
 			//gifPreview();
 		}
 
@@ -193,15 +200,17 @@ this.fs       = require("fs");
 
 	}
 
-	FFMPEG.setNewGameProcess = function(_this,pid)
+	FFMPEG.setNewGameProcess = function(pid)
 	{
-		_this.namingIndex = 0;
-		_this.user_pid = pid;
-		var USER_DIR = tcsapp.conf.ROOT_PATH+"/Users/"+_this.user_pid;
-		if (!_this.fs.existsSync(USER_DIR)){
-			_this.fs.mkdirSync(USER_DIR);
+		this.namingIndex = 0;
+		this.user_pid = pid;
+    console.log("this.DIR_ROOT : "+  this.DIR_ROOT);
+    this.DIR_USER = this.DIR_ROOT+"/Users/"+this.user_pid;
+    console.log("this.DIR_USER : "+  this.DIR_USER);
+		if (!this.fs.existsSync(this.DIR_USER)){
+			this.fs.mkdirSync(this.DIR_USER);
 		}
-		_this.logSocket("process "+_this.user_pid+": New Game");
+		this.logSocket("process "+this.user_pid+": New Game");
 		//introRenamingFiles();
 	}
 
@@ -217,15 +226,15 @@ this.fs       = require("fs");
 
     }
     FFMPEG.gifDisplay = function(){
-      var dest = tcsapp.conf.ROOT_PATH+"/Users/"+this.user_pid+"/image-"+zeroName(this.namingIndex-1)+".jpg";
-      $$("userPhotoPreview").src = dest;
+      var dest = this.DIR_USER+"/image-"+zeroName(this.namingIndex-1)+".jpg";
+      this.userPhotoPreview.src = dest;
 
     }
   FFMPEG.copyFileWithSequence = function(source,num)
     {
       for(var i = 0; i<num;i++){
 
-          var dest = tcsapp.conf.ROOT_PATH+"/Users/"+this.user_pid+"/image-"+zeroName(this.namingIndex)+".jpg";
+          var dest = this.DIR_USER+"/image-"+zeroName(this.namingIndex)+".jpg";
           //console.log("intro : "+dest);
           this.namingIndex++;
           copyFile(source,dest,function(err){logFFmpeg(err)});
@@ -235,20 +244,20 @@ this.fs       = require("fs");
   FFMPEG.introRenamingFiles = function()
 	{
 		this.logSocket("process "+this.user_pid+": introRenamingFiles");
-		var source = tcsapp.conf.ROOT_PATH+"/Users/moods/intro.jpg";
+		var source = this.DIR_PRESET+"/moods/intro.jpg";
 		this.copyFileWithSequence(source,this.NUM_INTRO);
 	}
 	FFMPEG.outroRenamingFiles = function()
 	{
 		this.logSocket("process "+this.user_pid+": outroRenamingFiles");
-		var source = tcsapp.conf.ROOT_PATH+"/Users/moods/outro.jpg";
+		var source = this.DIR_PRESET+"/moods/outro.jpg";
 		this.copyFileWithSequence(source,this.NUM_OUTRO);
 	}
   FFMPEG.cleanupTemp = function()
     {
       this.logSocket("process "+this.user_pid+": cleanupTemp");
       var fileArr;
-      var p = tcsapp.conf.ROOT_PATH+"/Temp";
+      var p = this.DIR_TEMP;
       this.fs.readdir(p, function (err, files) {
           if (err) {
               throw err;
@@ -327,9 +336,9 @@ this.fs       = require("fs");
 		this.currentProcess = "edm";
 		this.logSocket("process "+this.user_pid+": make EDM image");
 
-		var input = tcsapp.conf.ROOT_PATH+"/Users/"+this.user_pid+"/image-000.jpg";
-		var output = tcsapp.conf.ROOT_PATH+"/Final/"+this.user_pid+".png";
-		var wm = tcsapp.conf.ROOT_PATH+"/Users/moods/overlay_wm.png";
+		var input  = this.DIR_USER+"/image-000.jpg";
+		var output = this.DIR_FINAL+"/"+this.user_pid+".png";
+		var wm     = this.DIR_PRESET+"/moods/overlay_wm.png";
 		const options = [];
 		options.push("-y");
 		options.push("-i");
@@ -392,8 +401,8 @@ ffmpeg -f image2 -framerate 4 -i ./test/image-%%03d.jpg -i palette.png  -lavfi "
   FFMPEG.gifProcessHD1 = function(){
     this.currentProcess = "gif_p1";
  		this.logSocket("process "+this.user_pid+": make palette image");
- 		var input = tcsapp.conf.ROOT_PATH+"/Users/"+this.user_pid+"/image-%03d.jpg";
- 		var output = tcsapp.conf.ROOT_PATH+"/Final/palette.png";
+ 		var input = this.DIR_USER+"/image-%03d.jpg";
+ 		var output = this.DIR_FINAL+"/palette.png";
  		const options = [];
  		options.push("-y");
  		options.push("-v");
@@ -410,9 +419,9 @@ ffmpeg -f image2 -framerate 4 -i ./test/image-%%03d.jpg -i palette.png  -lavfi "
    FFMPEG.gifProcessHD2 = function(){
      this.currentProcess = "gif";
      this.logSocket("process "+this.user_pid+": make GIF image");
-     var input = tcsapp.conf.ROOT_PATH+"/Users/"+this.user_pid+"/image-%03d.jpg";
-     var input2 = tcsapp.conf.ROOT_PATH+"/Final/palette.png";
-     var output = tcsapp.conf.ROOT_PATH+"/Final/"+this.user_pid+".gif";
+     var input   = this.DIR_USER+"/image-%03d.jpg";
+  	 var output2 = this.DIR_FINAL+"/palette.png";
+     var output  = this.DIR_FINAL+"/"+this.user_pid+".gif";
      const options = [];
      options.push("-y");
      options.push("-v");
@@ -431,8 +440,8 @@ ffmpeg -f image2 -framerate 4 -i ./test/image-%%03d.jpg -i palette.png  -lavfi "
 	FFMPEG.gifProcess = function(){
 		this.currentProcess = "gif";
 		this.logSocket("process "+this.user_pid+": make GIF image");
-		var input = tcsapp.conf.ROOT_PATH+"/Users/"+this.user_pid+"/image-%03d.jpg";
-		var output = tcsapp.conf.ROOT_PATH+"/Final/"+this.user_pid+".gif";
+		var input   = this.DIR_USER+"/image-%03d.jpg";
+		var output  = this.DIR_FINAL+"/"+this.user_pid+".gif";
 		const options = [];
 		options.push("-y");
 		options.push("-f");
@@ -456,8 +465,8 @@ ffmpeg -i in.mp4 -i watermark.png -i palette.png -filter_complex "[0]fps=10,scal
 	FFMPEG.gifProcess2 = function(){
 		this.currentProcess = "gif";
 		this.logSocket("process "+this.user_pid+": make GIF image");
-		var input = tcsapp.conf.ROOT_PATH+"/Users/"+this.user_pid+"/image-%03d.jpg";
-		var output = tcsapp.conf.ROOT_PATH+"/Final/"+this.user_pid+".gif";
+    var input   = this.DIR_USER+"/image-%03d.jpg";
+		var output  = this.DIR_FINAL+"/"+this.user_pid+".gif";
 		const options = [];
 		options.push("-y");
 		options.push("-f");
@@ -476,9 +485,9 @@ ffmpeg -i in.mp4 -i watermark.png -i palette.png -filter_complex "[0]fps=10,scal
 	FFMPEG.overlayProcess = function(){
 		this.currentProcess = "overlay";
 		this.logSocket("process "+this.user_pid+": make Overlay WaterMark");
-		var input = tcsapp.conf.ROOT_PATH+"/Final/"+this.user_pid+".gif";
-		var output = tcsapp.conf.ROOT_PATH+"/Final/"+this.user_pid+".gif";
-		var wm = tcsapp.conf.ROOT_PATH+"/Users/moods/overlay_logo.png";
+    var input   = this.DIR_FINAL+"/"+this.user_pid+".gif";
+		var output  = this.DIR_FINAL+"/"+this.user_pid+".gif";
+		var wm = this.DIR_PRESET+"/moods/overlay_logo.png";
 		const options = [];
 		options.push("-y");
 		options.push("-i");
@@ -494,9 +503,9 @@ ffmpeg -i in.mp4 -i watermark.png -i palette.png -filter_complex "[0]fps=10,scal
 	FFMPEG.overlayProcess2 = function(){
 		this.currentProcess = "overlay";
 		this.logSocket("process "+this.user_pid+": make Overlay WaterMark");
-		var input = tcsapp.conf.ROOT_PATH+"/Final/"+this.user_pid+".gif";
-		var output = tcsapp.conf.ROOT_PATH+"/Final/"+this.user_pid+".gif";
-		var wm = tcsapp.conf.ROOT_PATH+"/Users/moods/overlay_wm.png";
+    var input   = this.DIR_FINAL+"/"+this.user_pid+".gif";
+    var output  = this.DIR_FINAL+"/"+this.user_pid+".gif";
+		var wm = this.DIR_PRESET+"/moods/overlay_wm.png";
 		const options = [];
 		options.push("-y");
 		options.push("-i");

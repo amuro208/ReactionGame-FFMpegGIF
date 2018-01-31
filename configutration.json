@@ -1,0 +1,14 @@
+{
+ "current": {
+  "CMD_SOCKET_ID": 1,
+  "CMD_SOCKET_IP": "127.0.0.1",
+  "CMD_SOCKET_PORT": 9000,
+  "ROOT_PATH": "C:/AMURO/Workspace/TCSVideoPlayer/media"
+ },
+ "default": {
+  "CMD_SOCKET_ID": 1,
+  "CMD_SOCKET_IP": "127.0.0.1",
+  "CMD_SOCKET_PORT": 9000,
+  "ROOT_PATH": "C:/AMURO/Workspace/TCSVideoPlayer/media"
+ }
+}
